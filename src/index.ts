@@ -20,20 +20,19 @@ function statify (parent: React.Component): (input: React.StatelessComponent<{se
       function setState (childPartialState: State): void {
         parent.setState((parentState) => (setChildState(parentState, path, childPartialState)))
       }
-      if (path == undefined) throw new Error(`Need an path prop to keep it's state in parent.state[id].`)
-      return stateless({ setState, ...props, ..._.get(parent.state, path) }, context)
+      return stateless({ setState, ...props, ...getChildState(parent.state, path) }, context)
     }
   }
 }
 
-function getChildState(state: State, path: string|string[]) {
+function getChildState(state: State, path: string|string[]|undefined) {
   if (path == undefined || path === '' || ((path instanceof Array) && !path.length)) {
     return state
   }
   return _.get(state, path)
 }
 
-function setChildState(state: State, path: string|symbol|Array<string|symbol>, childPartialState: State): State {
+function setChildState(state: State, path: string|string[]|undefined, childPartialState: State): State {
   if (path == undefined || path === '' || ((path instanceof Array) && !path.length)) {
     return { ...state, ...childPartialState }
   }

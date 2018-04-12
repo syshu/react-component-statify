@@ -54,7 +54,8 @@ describe('setChildState', function () {
 describe('statify', function () {
   // After parentComponent.setState was called, it will reveal what parameter the parent setState function will be called with.
   let setStateResult = null
-  const parentComponent = {state: {id1: {prop1: 'prop1', prop2: 'prop2'}}, setState: function setState(func) {setStateResult = func(this.state)}}
+  function setState (func) {setStateResult = func(this.state)}
+  const parentComponent = {state: {id1: {prop1: 'prop1', prop2: 'prop2'}}, setState}
   const simpleStateless = (props, context) => ({props, context})
   let output = null
   it('outputs a stateless component', function () {
@@ -92,6 +93,30 @@ describe('statify', function () {
         prop2: 'prop2',
         prop3: 'newlyAdded3',
       }
+    })
+  })
+  describe('deep path', function () {
+    const parentComponent = { state: {a: {aa: {aaa: 1, aab: 2}}}, setState }
+    const outputStateless = statify(parentComponent)(simpleStateless)
+    it('child states is proper', function () {
+      outputStateless({path: 'a.aa'})
+      .should.containDeep({props: { aaa: 1, aab: 2 }})
+    })
+    it('child setState works properly', function () {
+      outputStateless({path: 'a.aa'}).props.setState({aab: 3, aac: 4})
+      setStateResult.should.containDeep({a: {aa: {aaa: 1, aab: 3, aac: 4}}})
+    })
+  })
+  describe('root path', function () {
+    const parentComponent = { state: {a: 1, b: 2}, setState }
+    const outputStateless = statify(parentComponent)(simpleStateless)
+    it('child states is proper', function () {
+      outputStateless({})
+      .should.containDeep({props: {a: 1, b: 2}})
+    })
+    it('child setState works properly', function () {
+      outputStateless({}).props.setState({ b: 3, c: 4 })
+      setStateResult.should.containDeep({ a: 1, b: 3, c: 4})
     })
   })
 })
