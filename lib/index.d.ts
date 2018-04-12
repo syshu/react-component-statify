@@ -9,6 +9,6 @@ import React from 'react';
 declare function statify(parent: React.Component): (input: React.StatelessComponent<{
     setState: Function;
 }>) => React.StatelessComponent<{
-    path: string | symbol;
+    path?: string | string[];
 }>;
 export default statify;

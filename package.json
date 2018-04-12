@@ -1,8 +1,12 @@
 {
   "name": "react-component-statify",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Bind a stateless component's prop to it's parent component's state.",
+  "repository": "https://github.com/syshu/react-component-statify",
   "main": "./index.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "compile": "tsc --sourceMap --allowSyntheticDefaultImports --declaration --module commonjs --outDir ./lib ./src/index.ts",
     "test": "npm run compile && mocha"
@@ -13,10 +17,14 @@
   "author": "syshu",
   "license": "ISC",
   "devDependencies": {
+    "@types/rewire": "^2.5.28",
     "mocha": "^5.0.5",
+    "rewire": "^4.0.0",
     "should": "^13.2.1"
   },
   "dependencies": {
-    "@types/react": "^16.3.9"
+    "@types/lodash": "^4.14.106",
+    "@types/react": "^16.3.9",
+    "lodash": "^4.17.5"
   }
 }

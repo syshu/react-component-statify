@@ -1,5 +1,55 @@
-const should = require('should')
-const statify = require('../index.js')
+require('should')
+const rewire = require('rewire')
+const statify = rewire('../index.js')
+const statifyScript = rewire('../lib')
+const setChildState = statifyScript.__get__('setChildState')
+const getChildState = statifyScript.__get__('getChildState')
+
+describe('getChildState', function () {
+  it('with the path of 2 layers', function () {
+    getChildState({a: {aa: {aaa: 1, aab: 2}}}, 'a.aa')
+    .should.containDeep({aaa: 1, aab: 2})
+  })
+  it('with no path', function () {
+    getChildState({a: 1, b:2}, undefined)
+    .should.containDeep({a: 1, b: 2})
+  })
+  it('with empty string path', function () {
+    getChildState({a: 1, b:2}, '')
+    .should.containDeep({a: 1, b: 2})
+  })
+  it('with empty array path', function () {
+    getChildState({a: 1, b:2}, [])
+    .should.containDeep({a: 1, b: 2})
+  })
+})
+
+describe('setChildState', function () {
+  it('with the path of 1 layer', function () {
+    setChildState({a: {aa: 1, ab: 2}}, 'a', {ab: 3, ac: 4})
+    .should.containDeep({a: {aa: 1, ab: 3, ac: 4}})
+  })
+  it('replaces child substate totally', function () {
+    setChildState({a: {aa: {aaa: 1, aab: 2}}}, 'a', {aa: {aaa: 3}})
+    .should.containDeep({a: {aa: {aaa: 3, aab: undefined}}})
+  })
+  it(`doesn't affect other path properties`, function () {
+    setChildState({a: {aa: 1}, b: {ba: 2}}, 'a', {aa: 3})
+    .should.containDeep({a: {aa: 3}, b: {ba: 2}})
+  })
+  it(`without path`, function () {
+    setChildState({a: 1, b: 2}, undefined, {b: 3, c: 4})
+    .should.containDeep({a:1, b:3, c:4})
+  })
+  it(`with the path of 2 layers`, function () {
+    setChildState({a: {aa: {aaa: 1, aab: 2}}}, ['a', 'aa'], {aab: 3, aac: 4})
+    .should.containDeep({a: {aa: {aaa: 1, aab: 3, aac: 4}}})
+  })
+  it(`with the path of 2 layers (dot-splitted form string)`, function () {
+    setChildState({a: {aa: {aaa: 1, aab: 2}}}, 'a.aa', {aab: 3, aac: 4})
+    .should.containDeep({a: {aa: {aaa: 1, aab: 3, aac: 4}}})
+  })
+})
 
 describe('statify', function () {
   // After parentComponent.setState was called, it will reveal what parameter the parent setState function will be called with.
