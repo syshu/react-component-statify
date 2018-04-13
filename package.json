@@ -1,6 +1,6 @@
 {
   "name": "react-component-statify",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Bind a stateless component's prop to it's parent component's state.",
   "repository": "https://github.com/syshu/react-component-statify",
   "main": "./index.js",

@@ -1,9 +1,10 @@
 require('should')
 const rewire = require('rewire')
-const statify = rewire('../index.js')
+const statify = require('../index.js').statifyWith
 const statifyScript = rewire('../lib')
 const setChildState = statifyScript.__get__('setChildState')
 const getChildState = statifyScript.__get__('getChildState')
+const statifyMethod = require('../index.js')
 
 describe('getChildState', function () {
   it('with the path of 2 layers', function () {
@@ -51,12 +52,12 @@ describe('setChildState', function () {
   })
 })
 
+// After parentComponent.setState was called, it will reveal what parameter the parent setState function will be called with.
+const parentComponent = {state: {id1: {prop1: 'prop1', prop2: 'prop2'}}, setState}
+const simpleStateless = (props, context) => ({props, context})
+let setStateResult = null
+function setState (func) {setStateResult = func(this.state)}
 describe('statify', function () {
-  // After parentComponent.setState was called, it will reveal what parameter the parent setState function will be called with.
-  let setStateResult = null
-  function setState (func) {setStateResult = func(this.state)}
-  const parentComponent = {state: {id1: {prop1: 'prop1', prop2: 'prop2'}}, setState}
-  const simpleStateless = (props, context) => ({props, context})
   let output = null
   it('outputs a stateless component', function () {
     output = statify(parentComponent)(simpleStateless)
@@ -118,5 +119,17 @@ describe('statify', function () {
       outputStateless({}).props.setState({ b: 3, c: 4 })
       setStateResult.should.containDeep({ a: 1, b: 3, c: 4})
     })
+  })
+})
+
+describe('statify method', function () {
+  const statify = statifyMethod.bind({ state: {a: {aa: 1, ab: 2 }}, setState })
+  it('getChildState', function () {
+    statify(simpleStateless)({path: 'a'})
+    .should.containDeep({props: {aa: 1, ab: 2}})
+  })
+  it('setChildState', function () {
+    statify(simpleStateless)({path: 'a'}).props.setState({ab: 3, ac: 4})
+    setStateResult.should.containDeep({a: {aa: 1, ab: 3, ac: 4}})
   })
 })
