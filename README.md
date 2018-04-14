@@ -8,8 +8,11 @@ Stateless components are not really stateless, they host their states in parent 
 export default ({ id, name, description, changeName, changeDescription }) => (
   <div>
     <span>id={id}</span>
-    <input value={name} onChange={({ target }) => {changeName(id, target.value)}}>
-    <input value={description} onChange={({ target }) => {changeDescription(id, target.value)}}>
+    <input
+      value={name}
+      onChange={({ target }) => {changeName(id, target.value)}}
+    />
+    <input value={description} onChange={({ target }) => {changeDescription(id, target.value)}} />
   </div>
 )
 
@@ -42,8 +45,8 @@ class ParentComponentClass extends React.Component {
 export default ({ id, name, description, setState }) => (
   <div>
     <span>id={id}</span>
-    <input value={name} onChange={({ target }) => {setState({name: target.value})}}>
-    <input value={description} onChange={({ target }) => {setState({description: target.value})}}>
+    <input value={name} onChange={({ target }) => {setState({name: target.value})}} />
+    <input value={description} onChange={({ target }) => {setState({description: target.value})}} />
   </div>
 )
 
@@ -73,7 +76,7 @@ ParentComponentClass.prototype.statify = statify
 # Interfaces
 ## Importing
 ```
-import statify, { statifyWith } from 'react-component-statify
+import statify, { statifyWith } from 'react-component-statify'
 ```
 or
 ```
