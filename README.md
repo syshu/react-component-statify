@@ -8,10 +8,7 @@ Stateless components are not really stateless, they host their states in parent 
 export default ({ id, name, description, changeName, changeDescription }) => (
   <div>
     <span>id={id}</span>
-    <input
-      value={name}
-      onChange={({ target }) => {changeName(id, target.value)}}
-    />
+    <input value={name} onChange={({ target }) => {changeName(id, target.value)}} />
     <input value={description} onChange={({ target }) => {changeDescription(id, target.value)}} />
   </div>
 )
@@ -32,7 +29,13 @@ class ParentComponentClass extends React.Component {
   render () {
     return (
       <...>
-        <ChildStatelessComponent id={id1} name={this.state.data[id1].name} description={this.state.data[id1].description} changeName={this.changeName.bind(this)} changeDescription={this.changeDescription.bind(this)} />
+        <ChildStatelessComponent
+          id={id1}
+          name={this.state.data[id1].name}
+          description={this.state.data[id1].description}
+          changeName={this.changeName.bind(this)}
+          changeDescription={this.changeDescription.bind(this)}
+        />
       </...>
     )
   }
