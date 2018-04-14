@@ -1,70 +1,9 @@
 # Brief
 Stateless components are not really stateless, they host their states in parent components' state or redux store state, this library gives you convinience to connect to parent components' state.
 ## Brief Comparison
-### The way you use stateless component usually:
-```
-/* ChildStatelessComponent.jsx */
+Usually: `<ChildComponent id={id1} name={this.state.data[id1].name} description={this.state.data[id1].description} changeName={this.changeName.bind(this)} changeDescription={this.changeDescription.bind(this)} />`, and implement 'changeName' and 'changeDescription' as well if the ChildComponent has e.g. `<input>`s to change those fields.
 
-export default ({ id, name, description, changeName, changeDescription }) => (
-  <div>
-    <span>id={id}</span>
-    <input value={name} onChange={({ target }) => {changeName(id, target.value)}} />
-    <input value={description} onChange={({ target }) => {changeDescription(id, target.value)}} />
-  </div>
-)
-```
-Use parameter props.changeName and props.changeDescription to change state.
-```
-/* ParentComponentClass.jsx */
-
-class ParentComponentClass extends React.Component {
-  ...
-
-  render () {
-    return (
-      <...>
-        <ChildStatelessComponent
-          id={id1}
-          name={this.state.data[id1].name}
-          description={this.state.data[id1].description}
-          changeName={this.changeName.bind(this)}
-          changeDescription={this.changeDescription.bind(this)}
-        />
-      </...>
-    )
-  }
-}
-```
-And to implement changeName and changeDescription method.
-### With statify:
-```
-/* ChildStatelessComponent.jsx */
-
-export default ({ id, name, description, setState }) => (
-  <div>
-    <span>id={id}</span>
-    <input value={name} onChange={({ target }) => {setState({name: target.value})}} />
-    <input value={description} onChange={({ target }) => {setState({description: target.value})}} />
-  </div>
-)
-
-/* ParentComponentClass.jsx */
-
-class ParentComponentClass extends React.Component {
-  ...
-
-  render () {
-    const ChildStatelessComponent = this.ChildStatelessComponent
-    return (
-      <...>
-        // Automatically sync the component's props with parent's state[id1]
-        <StatifiedChildStatelessComponent path={id1} />
-      </...>
-    )
-  }
-}
-```
-The stateless component's props was binded to parent component's state[id1], and provides a props.setState function to operate parent's state[id1].
+With statify: `<StatifiedChildComponent path={['data', id1]} />`, also, no need to have any 'changeName' or 'changeDescription', it provides a `setState` prop to wrapped component, it sets parent's 'state.data[id1]' as it is an independent state.
 
 # Interfaces
 ## Importing
