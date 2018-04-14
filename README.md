@@ -12,19 +12,13 @@ export default ({ id, name, description, changeName, changeDescription }) => (
     <input value={description} onChange={({ target }) => {changeDescription(id, target.value)}} />
   </div>
 )
-
+```
+Use parameter props.changeName and props.changeDescription to change state.
+```
 /* ParentComponentClass.jsx */
 
 class ParentComponentClass extends React.Component {
   ...
-
-  changeName (...) {
-    ...
-  }
-
-  changeDescription (...) {
-    ...
-  }
 
   render () {
     return (
@@ -41,6 +35,7 @@ class ParentComponentClass extends React.Component {
   }
 }
 ```
+And to implement changeName and changeDescription method.
 ### With statify:
 ```
 /* ChildStatelessComponent.jsx */
@@ -56,11 +51,6 @@ export default ({ id, name, description, setState }) => (
 /* ParentComponentClass.jsx */
 
 class ParentComponentClass extends React.Component {
-  constructor(...) {
-    ...
-    this.ChildStatelessComponent = this.statify(ChildStatelessComponent)
-  }
-
   ...
 
   render () {
@@ -68,13 +58,13 @@ class ParentComponentClass extends React.Component {
     return (
       <...>
         // Automatically sync the component's props with parent's state[id1]
-        <ChildStatelessComponent path={id1} />
+        <StatifiedChildStatelessComponent path={id1} />
       </...>
     )
   }
 }
-ParentComponentClass.prototype.statify = statify
 ```
+The stateless component's props was binded to parent component's state[id1], and provides a props.setState function to operate parent's state[id1].
 
 # Interfaces
 ## Importing
